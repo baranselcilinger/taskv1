@@ -1,0 +1,121 @@
+﻿@model TaskSchedule.Models.TaskViewModel
+
+@{
+    ViewBag.Title = "Add";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="content-header">
+    <h1>
+        Ayşatur İş Takip
+        <small>Yeni İş Ekleme Paneli</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-home"></i>Ana Sayfa</a></li>
+        <li class="active"></li>
+    </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+
+    <div class="row">
+        <div class="container">
+
+            @using (Ajax.BeginForm("Add", "Task", new AjaxOptions { HttpMethod = "Post", OnSuccess = "save()" }))
+            {
+                <div id="taskAdd" class="box box-primary">
+                    <div class="box-header ui-sortable-handle">
+                        <div class="col-md-6">
+
+                            <div class="box-body">
+
+                                @foreach (var item in ViewBag.Id)
+                                {
+                                    <div class="checkbox">
+
+                                        <label>
+                                            <input type="checkbox" value="@item.Id" name="isler" />
+
+                                            @item.JobName
+
+                                        </label>
+                                    </div>
+                                }
+
+                                @*@Html.DropDownList("JobId", null, htmlAttributes: new { @class = "form-control", id = "dropDown", Multiple = "multiple" })*@
+
+                                @*@Html.DropDownListFor(m => m.Job, new List<SelectListItem>
+                                    { new SelectListItem {Text="Uçak Bileti"},
+                                    new SelectListItem {Text="Vize İşlemleri"}})*@
+
+
+                                @*<div id="dateCreated">
+                                        <label>Görevin Açıldığı Tarih</label>
+                                        @Html.TextBoxFor(m => m.DateCreated, new { @class = "form-control", required = "required" })
+                                    </div>*@
+
+                                <div class="form-group" id="title">
+                                    <label>Görev Adı</label>
+                                    <p style="font-size:10px;">*Yukardakilerden farklı görev girilirse</p>
+                                    @Html.TextBoxFor(m => m.Title, new { @class = "form-control" })
+                                </div>
+
+                                @*<div id="description">
+                                        <label>Görev Açıklama</label>
+                                        @Html.TextBoxFor(m => m.Description, new { @class = "form-control" })
+                                    </div>*@
+                                @*<div id="dateStart">
+
+                                        <div id="dateStart">
+                                            <label>Göreve Başlama Tarihi</label>
+                                            @Html.TextBoxFor(m => m.DateStart, new { @class = "form-control", required = "required" })
+                                        </div>
+
+                                    </div>
+
+                                    <div id="dateFinish">
+                                        <label>Görevin Bitiş Tarihi</label>
+                                        @Html.TextBoxFor(m => m.DateFinish, new { @class = "form-control" })
+                                    </div>*@
+
+
+
+                                @*<div id="addedBy">
+                                        <label>Görevi Oluşturan Kişi</label>
+                                        @Html.TextBoxFor(m => m.AddedBy, new { @class = "form-control", required = "required" })
+                                    </div>*@
+                            </div>
+
+                        </div>
+                        <button class="btn btn-primary" id="save" onclick="save()" type="submit" style="margin-top:20px;">Yeni İş Oluştur</button>
+                    </div>
+                </div>
+            }
+
+
+        </div>
+    </div>
+</section>
+
+
+@section Scripts{
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+   
+
+    <script>
+
+         function save() {
+
+         swal({
+         title: "Başarıyla Eklendi!",
+         icon: "success",
+         button: "OK"
+
+             });
+        }
+
+    </script>
+
+}

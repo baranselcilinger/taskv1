@@ -1,0 +1,54 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+
+<section class="content-header">
+    <h1>
+        Ayşatur İş Takip
+        <small>Görev Listesi</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-home"></i>Ana Sayfa</a></li>
+        <li class="active"></li>
+        Görev Listesi
+    </ol>
+</section>
+<section class="content">
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-3">
+                <div class="box box-widget widget-user-2">
+                    <div class="widget-user-header bg-red">
+                        <h3 class="widget-user-username">
+                            @item.UserName
+                        </h3>
+                    </div>
+                    <div class="box-body">
+                        @foreach (var t in item.TaskList)
+                        {
+                            <div class="box box-danger">
+                                <div class="box-hader ui-sortable-handle" style="box-shadow: 1px 2px lightgrey;">
+                                    <p>  <label>Başlama Tarihi: </label>    @t.AssignedDate </p>
+                                    <p>  <label>İş Tanımı: </label>   @t.Description </p>
+
+                                    @*<p>
+                                        <b><i class="fa fa-sort-amount-asc"></i> Yapılacaklar</b>
+                                    </p>
+                                    @foreach (var v in t.Todos)
+                                    {
+                                        <i class="fa fa-edit"> </i> @v.Name
+                                    }*@
+
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</section>

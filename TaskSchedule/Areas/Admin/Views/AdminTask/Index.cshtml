@@ -1,0 +1,138 @@
+﻿
+@using TaskSchedule.Models
+@model IOrderedEnumerable<TaskViewModel>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .table-bordered > tbody > tr > td {
+        border: 1px solid lightgray;
+    }
+</style>
+
+
+<section class="content-header">
+    <h1>
+        Ayşatur İş Takip
+        <small>Görev Listesi</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-home"></i>Ana Sayfa</a></li>
+        <li class="active"></li>
+        Görev Atama
+    </ol>
+</section>
+@if (TempData["Message"] != null)
+{
+<div class="alert alert-success">
+    @TempData["Message"]
+</div>
+}
+<section class="content">
+    <span>
+        <b>Kayıtlı Görev Sayısı:</b>
+        <span id="gorevSayisi">
+            @Model.Count()
+        </span>
+    </span>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box">
+                <table id="example1" class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>İş Tanımı</th>
+                            <th>Yapılan/Yapılacak İşler</th>
+                            <th>İlgili Personel</th>
+                            <th>#</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Description</td>
+                                <td>
+                                    <ul>
+                                        @foreach (var to in item.Todos)
+                                        {
+                                            <li> @to.Name</li>
+                                        }
+                                    </ul>
+                                </td>
+                                <td>
+                                    <ul>
+                                        @foreach (var pipi in item.Users)
+                                        {
+                                            <li>@pipi.Name</li>
+
+                                        }
+                                    </ul>
+                                    @if (item.Users.Count == 0)
+                                    {
+                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal_@item.Id">Personel Ata</button>
+                                        <div class="modal fade" id="myModal_@item.Id" role="dialog">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content" id="modalSonuc">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                        <h4 class="modal-title">İş Ekle</h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <input type="hidden" id="Job_@item.Id" />
+                                                        <ul>
+                                                            @foreach (var p in ViewBag.personal)
+                                                            {
+                                                                <li>
+                                                                    <input type="checkbox" id="personal_@item.Id" value="@p.Id" />
+                                                                    @p.Name
+                                                                </li>
+                                                            }
+                                                        </ul>
+                                                        <div class="modal-footer">
+                                                            <button id="atama" type="submit" class="btn btn-primary" data-dismiss="modal" onclick="Ata(@item.Id)">Personeli Ata</button>
+                                                            <button type="button" class="btn btn-primary" data-dismiss="modal">Çıkış</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </td>
+                                <td>
+                                    @if (item.Users.Count > 0)
+                                    {
+                                        <a href="@Url.Action("Edit", "AdminTask", new { id = item.Id })">Düzenle</a>
+                                    }
+                                    <a href="@Url.Action("Delete", "AdminTask", new { id = item.Id })">Sil</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts{
+    <script>
+        function Ata(Id) {
+            var pi = new Array();
+            $("#personal_" + Id + ":checked"
+            ).each(function () {
+                pi.push($(this).val());
+            });
+            var data = { IsId: Id, personnelId: pi };
+            $.post('@Url.Action("personalAta")', data
+            ).done(function (data) {
+                location.reload();
+                });
+        }
+        $(function () {
+            $('#example1').DataTable();
+        })
+    </script>
+}
+

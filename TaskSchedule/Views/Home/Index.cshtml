@@ -1,0 +1,109 @@
+﻿@model IEnumerable<TaskSchedule.Models.TaskViewModel>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="content-header">
+    <h1>
+        Ayşatur İş Takip
+        <small>Görev Listesi</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-home"></i>Ana Sayfa</a></li>
+        <li class="active"></li>
+        Görev Listesi
+    </ol>
+</section>
+
+<section class="content">
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-3">
+                <div class="box box-widget widget-user-2">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="box box-primary">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">@item.Description</h3>
+                                </div>
+                                <div class="box-body no-padding">
+                                    <div class="table-responsive mailbox-messages">
+                                        <table class="table table-hover table-striped">
+                                            <tbody>
+                                                @foreach (var itm in item.Todos)
+                                                {
+                                                    <tr>
+                                                        <td>
+                                                            <input type="checkbox" id="chk-@(item.Id+"-"+itm.Id)" value="@(item.Id+"-"+itm.Id)" class="checkbox-toggle">
+                                                        </td>
+                                                        <td class="mailbox-subject" id="td-@(item.Id+"-"+itm.Id)">
+                                                            @itm.Name
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</section>
+@section scripts{
+    <style>
+        .ustuCizili {
+            text-decoration: line-through;
+        }
+    </style>
+    <script src="/Content/iCheck/icheck.min.js"></script>
+    <link rel="stylesheet" href="/Content/iCheck/flat/blue.css">
+    <script type="text/javascript">
+        $(function () {
+
+        });
+
+        $(".checkbox-toggle").click(function () {
+            var _this = this;
+            if (_this.checked) {
+                swal({
+                    title: "Görev tamamlandı mı?",
+                    icon: "warning",
+                    buttons: true,
+                    buttons: ["Hayır", "Evet"],
+                    dangerMode: true,
+                })
+                    .then((willDelete) => {
+                        if (willDelete) {
+                            $.ajax
+                                ({
+                                    url: '/Home/TaskComplete?Id=' + _this.value,
+                                    method: 'POST',
+                                    success: function (donen_veri) {
+                                        swal("Görev başarıyla tamamlandı!", {
+                                            icon: "success",
+                                        });
+                                        $('#chk-' + _this.value).attr('disabled', 'disabled');
+                                        $('#td-' + _this.value).addClass('ustuCizili');
+                                    },
+                                    error: function () {
+                                        _this.checked = false;
+                                        swal("Görev tamamlanma sırasında bir hata oluştu!", {
+                                            icon: "error",
+                                        });
+                                    }
+                                })
+
+                        } else {
+                            _this.checked = false;
+                        }
+                    });
+            }
+        });
+    </script>
+}
